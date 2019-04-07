@@ -1,0 +1,14 @@
+﻿@model AltTrack.Data.Vehicle
+
+@if(Model.Status=="Connected")
+{
+    <span class="text-success">@Html.DisplayFor(modelItem => Model.Status)</span>
+}else if(Model.Status=="Disconnected")
+{
+    <span class="text-danger">@Html.DisplayFor(modelItem => Model.Status)</span>
+}else
+{
+    <span class="text-warning">@Html.DisplayFor(modelItem => Model.Status)</span>
+}
+<br />
+<span class="small">@(Model.LastCheck.HasValue ? $"(Last Response: {Model.LastCheck.Value.ToString("dd/MM/yyyy hh:mm")})" : "")</span>

@@ -1,0 +1,125 @@
+﻿@page
+@model AltTrack.Web.UI.IndexModel
+@{
+    ViewData["Title"] = "Alternative Tracking(altTrack) Vehicle Simulation";
+}
+
+<div class="text-center">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-10">
+                <form method="post" class="form-inline">
+                    <input type="text" class="form-control mb-2 mr-sm-2 form-control-lg" asp-for="CustomerName" placeholder="Customer (Ex: tranporter)">
+                    <input type="text" class="form-control mb-2 mr-sm-2 form-control-lg" asp-for="VehicleId" placeholder="Vehicle (Ex: YS2R4X)">
+                    <select class="form-control mb-2 mr-sm-2 form-control-lg" asp-for="Status">
+                        <option></option>
+                        <option>Connected</option>
+                        <option>Disconnected</option>
+                        <option>Unknown</option>
+                    </select>
+                    <button type="submit" asp-page-handler="search" class="btn btn-primary mb-2">Search</button>
+                </form>
+            </div>
+
+            <div class="col-2 pb-4">
+                <form method="post">
+                    <button type="submit" asp-page-handler="refresh" class="btn btn-secondary btn-sm d-block w-100">Refresh</button>
+                    <span class="small"><label>@Model.LastRefresh</label></span>
+                </form>
+            </div>
+        </div>
+    </div>
+    @if (Model.Customers != null)
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Customer Name
+                    </th>
+                    <th>
+                        Address
+                    </th>
+                    <th>
+                        Vehicles
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Customers)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FirstName) @Html.DisplayFor(modelItem => item.LastName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Address.Street) @Html.DisplayFor(modelItem => item.Address.ApartmentNo) @Html.DisplayFor(modelItem => item.Address.PostalCode) @Html.DisplayFor(modelItem => item.Address.City)
+                        </td>
+                        <td>
+                            @if (item.Vehicles != null && item.Vehicles.Count() > 0)
+                            {
+                                <table class="w-100">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                <span class="small">Vehicle Id</span>
+                                            </th>
+                                            <th>
+                                                <span class="small">Registration Number</span>
+                                            </th>
+                                            <th><span class="small">Status</span></th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        @foreach (var vehicle in item.Vehicles)
+                                        {
+                                        <tr>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => vehicle.VehicleId)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => vehicle.RegistrationNumber)
+                                            </td>
+                                            <td>
+
+                                                @await Html.PartialAsync("_VehicleStatus", vehicle)
+                                            </td>
+                                            <td>
+                                                <form method="post">
+                                                    <button type="submit" asp-page-handler="ping" asp-route-vehicleid="@vehicle.VehicleId" class="btn btn-secondary btn-sm d-block w-100">Ping</button>
+                                                </form>
+
+                                            </td>
+                                        </tr>
+                                        }
+
+                                    </tbody>
+                                </table>
+                            }
+                            else
+                            {
+                                <span>No vehicle(s)</span>
+                            }
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    No data is found.
+                </div>
+            </div>
+        </div>
+    }
+</div>
