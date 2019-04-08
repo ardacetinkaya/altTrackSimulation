@@ -40,7 +40,7 @@ namespace altTrack.Vehicle
             {
                 HttpClient client = new HttpClient()
                 {
-                    BaseAddress = new Uri("https://alttrack-ping.azurewebsites.net")
+                    BaseAddress = new Uri("https://alttrack-pingservice.azurewebsites.net")
                 };
                 var result = await client.PostAsync("/api/connections/ping/base",
                     new StringContent(JsonConvert.SerializeObject(new
