@@ -3,6 +3,7 @@
     using AltTrack.Data;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.RazorPages;
+    using Microsoft.AspNetCore.Mvc.ViewFeatures;
     using Microsoft.Extensions.Configuration;
     using Newtonsoft.Json;
     using System;
@@ -27,6 +28,8 @@
         public string LastRefresh { get; set; }
 
         public IEnumerable<Customer> Customers { get; set; }
+
+        public StatusInfo Ping { get; set; }
 
         public IndexModel(IConfiguration config)
         {
@@ -59,7 +62,7 @@
 
         }
 
-        public async Task<IActionResult> OnPostPingAsync(string vehicleId)
+        public async Task<PartialViewResult> OnGetStatusPartial(string vehicleId)
         {
             try
             {
@@ -78,8 +81,15 @@
                 {
                     string responseContent = await response.Content.ReadAsStringAsync();
                     dynamic responseObject = JsonConvert.DeserializeObject(responseContent);
+
                     DateTimeOffset time = responseObject.traceTime;
                     string message = responseObject.traceMessage;
+
+                    Ping = new StatusInfo()
+                    {
+                        Status = message,
+                        LastCheck = time
+                    };
 
                     await UpdateVehicleStatus(vehicleId, message, time);
 
@@ -91,7 +101,7 @@
                 //For this demo nothing is needed for an extra
             }
 
-            return RedirectToPage("/Index");
+            return Partial("_VehicleStatus", this);
         }
 
         public async Task OnPostRefreshAsync()

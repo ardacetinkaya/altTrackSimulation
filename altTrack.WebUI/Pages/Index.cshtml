@@ -77,24 +77,34 @@
 
                                         @foreach (var vehicle in item.Vehicles)
                                         {
-                                        <tr>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => vehicle.VehicleId)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => vehicle.RegistrationNumber)
-                                            </td>
-                                            <td>
-
-                                                @await Html.PartialAsync("_VehicleStatus", vehicle)
-                                            </td>
-                                            <td>
-                                                <form method="post">
-                                                    <button type="submit" asp-page-handler="ping" asp-route-vehicleid="@vehicle.VehicleId" class="btn btn-secondary btn-sm d-block w-100">Ping</button>
-                                                </form>
-
-                                            </td>
-                                        </tr>
+                                            <tr>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => vehicle.VehicleId)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => vehicle.RegistrationNumber)
+                                                </td>
+                                                <td>
+                                                    <div class="@vehicle.VehicleId">
+                                                        @if (vehicle.Status == "Connected")
+                                                        {
+                                                            <span class="text-success">@Html.DisplayFor(modelItem => vehicle.Status)</span>
+                                                        }
+                                                        else if (vehicle.Status == "Disconnected")
+                                                        {
+                                                            <span class="text-danger">@Html.DisplayFor(modelItem => vehicle.Status)</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="text-warning">@Html.DisplayFor(modelItem => vehicle.Status)</span>
+                                                        }
+                                                       
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <button type="submit" class="btn btn-secondary btn-sm d-block w-100 ping" data-vehicleid="@vehicle.VehicleId">Ping</button>
+                                                </td>
+                                            </tr>
                                         }
 
                                     </tbody>
@@ -123,3 +133,16 @@
         </div>
     }
 </div>
+@section scripts{
+
+    <script>
+        $(document).ready(function () {
+            $(function () {
+                $('.ping').on('click', function () {
+                    var that = $(this);
+                    $(`.${that.data("vehicleid")}`).hide().load(`?handler=StatusPartial&vehicleid=${that.data("vehicleid")}`).fadeIn('500');
+                });
+            });
+        });
+    </script>
+}
