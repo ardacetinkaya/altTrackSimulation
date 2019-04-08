@@ -49,6 +49,7 @@ namespace altTrack.Vehicle
                     }), Encoding.UTF8, "application/json"));
 
                 log.LogInformation($"Vehicle({vehicleSimulation}) simulation executed at: {DateTime.Now}");
+                log.LogInformation($"Result: Success");
             }
             catch (Exception ex)
             {
