@@ -1,5 +1,8 @@
 ﻿@model IndexModel
-
+<div class="loading d-none">
+    <img src="/images/loading.svg" />
+    Ping...
+</div>
 @if (Model.Ping.Status == "Connected")
 {
     <span class="text-success">@Html.DisplayFor(modelItem => Model.Ping.Status)</span>

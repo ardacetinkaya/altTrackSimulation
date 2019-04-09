@@ -35,8 +35,8 @@
             //Check vehicles' latest status.
             vehicles.ToList().ForEach(v =>
             {
-                var status = CheckStatus(v.VehicleId);
-                _dataRepository.UpdateVehicleStatus(v.VehicleId, status.Result, DateTimeOffset.Now);
+                var status = CheckStatus(v.Id);
+                _dataRepository.UpdateVehicleStatus(v.Id, status.Result, DateTimeOffset.Now);
             });
 
             var customers = await _dataRepository.GetCustomers();

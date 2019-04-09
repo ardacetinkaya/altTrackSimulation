@@ -48,17 +48,17 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model.Customers)
+                @foreach (var customer in Model.Customers)
                 {
                     <tr>
                         <td>
-                            @Html.DisplayFor(modelItem => item.FirstName) @Html.DisplayFor(modelItem => item.LastName)
+                            @Html.DisplayFor(modelItem => customer.FirstName) @Html.DisplayFor(modelItem => customer.LastName)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Address.Street) @Html.DisplayFor(modelItem => item.Address.ApartmentNo) @Html.DisplayFor(modelItem => item.Address.PostalCode) @Html.DisplayFor(modelItem => item.Address.City)
+                            @Html.DisplayFor(modelItem => customer.Address.Street) @Html.DisplayFor(modelItem => customer.Address.ApartmentNo) @Html.DisplayFor(modelItem => customer.Address.PostalCode) @Html.DisplayFor(modelItem => customer.Address.City)
                         </td>
                         <td>
-                            @if (item.Vehicles != null && item.Vehicles.Count() > 0)
+                            @if (customer.Vehicles != null && customer.Vehicles.Count() > 0)
                             {
                                 <table class="w-100">
                                     <thead>
@@ -67,44 +67,58 @@
                                                 <span class="small">Vehicle Id</span>
                                             </th>
                                             <th>
+                                                <span class="small">Brand</span>
+                                            </th>
+                                            <th>
                                                 <span class="small">Registration Number</span>
                                             </th>
-                                            <th><span class="small">Status</span></th>
+                                            <th>
+                                                <span class="small">Status</span>
+                                            </th>
                                             <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
 
-                                        @foreach (var vehicle in item.Vehicles)
+                                        @foreach (var customersVehicle in customer.Vehicles)
                                         {
-                                            <tr>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => vehicle.VehicleId)
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => vehicle.RegistrationNumber)
-                                                </td>
-                                                <td>
-                                                    <div class="@vehicle.VehicleId">
-                                                        @if (vehicle.Status == "Connected")
-                                                        {
-                                                            <span class="text-success">@Html.DisplayFor(modelItem => vehicle.Status)</span>
-                                                        }
-                                                        else if (vehicle.Status == "Disconnected")
-                                                        {
-                                                            <span class="text-danger">@Html.DisplayFor(modelItem => vehicle.Status)</span>
-                                                        }
-                                                        else
-                                                        {
-                                                            <span class="text-warning">@Html.DisplayFor(modelItem => vehicle.Status)</span>
-                                                        }
-                                                       
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <button type="submit" class="btn btn-secondary btn-sm d-block w-100 ping" data-vehicleid="@vehicle.VehicleId">Ping</button>
-                                                </td>
-                                            </tr>
+                                            @if (customersVehicle.Vehicle != null)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => customersVehicle.VehicleId)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => customersVehicle.Vehicle.Brand)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => customersVehicle.RegistrationNumber)
+                                                    </td>
+                                                    <td>
+                                                        <div class="@customersVehicle.VehicleId">
+                                                            <div class="loading d-none">
+                                                                <img src="/images/loading.svg" />
+                                                                Ping...
+                                                            </div>
+                                                            @if (customersVehicle.Vehicle.LastStatus == "Connected")
+                                                            {
+                                                                <span class="text-success">@Html.DisplayFor(modelItem => customersVehicle.Vehicle.LastStatus)</span>
+                                                            }
+                                                            else if (customersVehicle.Vehicle.LastStatus == "Disconnected")
+                                                            {
+                                                                <span class="text-danger">@Html.DisplayFor(modelItem => customersVehicle.Vehicle.LastStatus)</span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <span class="text-warning">@Html.DisplayFor(modelItem => customersVehicle.Vehicle.LastStatus)</span>
+                                                            }
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <button type="submit" class="btn btn-secondary btn-sm d-block w-100 ping" data-vehicleid="@customersVehicle.VehicleId">Ping</button>
+                                                    </td>
+                                                </tr>
+                                            }
                                         }
 
                                     </tbody>
@@ -140,7 +154,10 @@
             $(function () {
                 $('.ping').on('click', function () {
                     var that = $(this);
-                    $(`.${that.data("vehicleid")}`).hide().load(`?handler=StatusPartial&vehicleid=${that.data("vehicleid")}`).fadeIn('500');
+                    $(`.${that.data('vehicleid')} .loading`).removeClass('d-none');
+                    $(`.${that.data('vehicleid')}`).hide().load(`?handler=StatusPartial&vehicleid=${that.data("vehicleid")}`, function () {
+                        $(`.${that.data('vehicleid')} .loading`).addClass('d-none');
+                    }).fadeIn('500');
                 });
             });
         });

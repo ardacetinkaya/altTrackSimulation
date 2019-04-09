@@ -12,14 +12,11 @@ namespace AltTrack.PingService.Data
         {
         }
 
-        public DbSet<VehicleStatus> VehicleStatuses { get; set; }
+        public DbSet<VehicleStatus> VehicleStatus { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!optionsBuilder.IsConfigured)
-            {
-                //optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=EFProviders.InMemory;Trusted_Connection=True;ConnectRetryCount=0");
-            }
+
         }
 
     }

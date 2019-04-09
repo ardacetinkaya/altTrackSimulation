@@ -25,7 +25,7 @@ namespace AltTrack.PingService.Data
                 VehicleId = vehicleId
             };
 
-            _dataContext.VehicleStatuses.Add(status);
+            _dataContext.VehicleStatus.Add(status);
             await _dataContext.SaveChangesAsync();
 
             return status;
@@ -33,12 +33,12 @@ namespace AltTrack.PingService.Data
 
         public IEnumerable<VehicleStatus> GetAllStatuses(string vehicleId)
         {
-            return _dataContext.VehicleStatuses.ToList();
+            return _dataContext.VehicleStatus.ToList();
         }
 
         public Task<VehicleStatus> GetLastStatus(string vehicleId)
         {
-            var status = _dataContext.VehicleStatuses.Where(s => s.VehicleId == vehicleId).OrderByDescending(s => s.TraceTime).FirstOrDefaultAsync();
+            var status = _dataContext.VehicleStatus.Where(s => s.VehicleId == vehicleId).OrderByDescending(s => s.TraceTime).FirstOrDefaultAsync();
 
             return status;
         }

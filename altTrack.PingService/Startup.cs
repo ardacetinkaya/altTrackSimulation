@@ -28,11 +28,11 @@ namespace PingService
         {
             services.AddDbContext<DataContext>(options =>
             {
-                options.UseInMemoryDatabase(databaseName: "Dummy");
+                options.UseSqlServer(Configuration["DBConnectionString"]);
                 options.EnableSensitiveDataLogging();
-            },ServiceLifetime.Singleton);
+            });
             
-            services.AddSingleton<IDataRepository, StatusDataRepository>();
+            services.AddTransient<IDataRepository, StatusDataRepository>();
             services.AddMvc();
         }
 

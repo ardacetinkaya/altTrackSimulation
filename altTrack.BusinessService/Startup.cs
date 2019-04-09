@@ -24,12 +24,11 @@
 
             services.AddDbContext<AltTrackDataContext>(options =>
             {
-                
-                options.UseInMemoryDatabase(databaseName: "Dummy");
+                options.UseSqlServer(Configuration["DBConnectionString"]);
                 options.EnableSensitiveDataLogging();
-            },ServiceLifetime.Singleton);
+            });
 
-            services.AddSingleton<IDataRepository, AltTrackDataRepository>();
+            services.AddTransient<IDataRepository, AltTrackDataRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
