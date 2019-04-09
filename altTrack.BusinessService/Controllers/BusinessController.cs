@@ -139,9 +139,10 @@
                 }
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 //Log exception or do some other related business stuff
+                status = ex.Message;
             }
             return status;
 
