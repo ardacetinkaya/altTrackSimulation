@@ -92,7 +92,15 @@
                     };
 
                     await UpdateVehicleStatus(vehicleId, message, time);
-
+                }
+                else
+                {
+                    //This means there is some Ping error to vehicle
+                    Ping = new StatusInfo()
+                    {
+                        Status =$"Error{ await response.Content.ReadAsStringAsync()}",
+                        LastCheck = DateTimeOffset.Now
+                    };
                 }
             }
             catch (HttpRequestException)//No connection for a ping server

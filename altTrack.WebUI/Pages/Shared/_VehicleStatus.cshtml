@@ -3,17 +3,24 @@
     <img src="/images/loading.svg" />
     Ping...
 </div>
-@if (Model.Ping.Status == "Connected")
+@if (Model.Ping != null)
 {
-    <span class="text-success">@Html.DisplayFor(modelItem => Model.Ping.Status)</span>
-}
-else if (Model.Ping.Status == "Disconnected")
-{
-    <span class="text-danger">@Html.DisplayFor(modelItem => Model.Ping.Status)</span>
+    @if (Model.Ping.Status == "Connected")
+    {
+        <span class="text-success">@Html.DisplayFor(modelItem => Model.Ping.Status)</span>
+    }
+    else if (Model.Ping.Status == "Disconnected")
+    {
+        <span class="text-danger">@Html.DisplayFor(modelItem => Model.Ping.Status)</span>
+    }
+    else
+    {
+        <span class="text-warning">@Html.DisplayFor(modelItem => Model.Ping.Status)</span>
+    }
+    <br />
+    <span class="small">@(Model.Ping.LastCheck.HasValue ? $"(Last ping: {Model.Ping.LastCheck.Value.ToString("dd/MM/yyyy hh:mm:ss")})" : "")</span>
 }
 else
 {
-    <span class="text-warning">@Html.DisplayFor(modelItem => Model.Ping.Status)</span>
+    <span class="text-danger">Connection Error</span>
 }
-<br />
-<span class="small">@(Model.Ping.LastCheck.HasValue ? $"(Last ping: {Model.Ping.LastCheck.Value.ToString("dd/MM/yyyy hh:mm:ss")})" : "")</span>
