@@ -43,7 +43,7 @@
             {
                 HttpClient client = new HttpClient()
                 {
-                    BaseAddress = new System.Uri(_config["AltTrackBusinessService"])
+                    BaseAddress = new Uri(_config["AltTrackBusinessService"])
                 };
 
                 var result = await client.GetAsync("/api/customers/all");
@@ -68,7 +68,7 @@
             {
                 HttpClient client = new HttpClient()
                 {
-                    BaseAddress = new System.Uri(_config["AltTrackPingService"])
+                    BaseAddress = new Uri(_config["AltTrackPingService"])
                 };
 
                 var response = await client.PostAsync("/api/connections/ping/vehicle",
@@ -110,7 +110,7 @@
             {
                 HttpClient client = new HttpClient()
                 {
-                    BaseAddress = new System.Uri(_config["AltTrackBusinessService"])
+                    BaseAddress = new Uri(_config["AltTrackBusinessService"])
                 };
                 var result = await client.GetAsync("/api/customers/all");
 
