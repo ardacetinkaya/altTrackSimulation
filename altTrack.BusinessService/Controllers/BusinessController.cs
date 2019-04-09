@@ -18,7 +18,7 @@
         private readonly IConfiguration _config = null;
 
         //Difference limit between current time and last connection check
-        private int _minuteDifference;
+        private readonly int _minuteDifference;
 
         public BusinessController(IDataRepository dataRepository, IConfiguration config)
         {

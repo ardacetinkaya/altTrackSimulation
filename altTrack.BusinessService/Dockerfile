@@ -3,6 +3,8 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
+ENV AltTrackPingService="https://localhost:44314"
+
 FROM mcr.microsoft.com/dotnet/core/sdk:2.2-stretch AS build
 WORKDIR /src
 COPY ["altTrack.BusinessService/altTrack.BusinessService.csproj", "altTrack.BusinessService/"]

@@ -88,6 +88,11 @@
             try
             {
                 response = await _dataRepository.GetLastStatus(vehicleId);
+
+                if (response == null)
+                {
+                    return NoContent();
+                }
             }
             catch (Exception ex)
             {

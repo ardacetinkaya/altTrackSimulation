@@ -3,7 +3,6 @@
     using AltTrack.Data;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.RazorPages;
-    using Microsoft.AspNetCore.Mvc.ViewFeatures;
     using Microsoft.Extensions.Configuration;
     using Newtonsoft.Json;
     using System;
@@ -53,8 +52,13 @@
                     string resultContent = await result.Content.ReadAsStringAsync();
                     Customers = JsonConvert.DeserializeObject<List<Customer>>(resultContent);
                 }
+                else
+                {
+                    //Log or some other business requirments can be done
+                    //For this demo nothing is needed for an extra
+                }
             }
-            catch (HttpRequestException)
+            catch (HttpRequestException ex)
             {
                 //Log or some other business requirments can be done
                 //For this demo nothing is needed for an extra
@@ -95,10 +99,10 @@
                 }
                 else
                 {
-                    //This means there is some Ping error to vehicle
+                    //This means there is some error while pinging the vehicle
                     Ping = new StatusInfo()
                     {
-                        Status =$"Error{ await response.Content.ReadAsStringAsync()}",
+                        Status =$"Error: { await response.Content.ReadAsStringAsync()}",
                         LastCheck = DateTimeOffset.Now
                     };
                 }
@@ -158,6 +162,11 @@
                     string resultContent = await result.Content.ReadAsStringAsync();
                     Customers = JsonConvert.DeserializeObject<List<Customer>>(resultContent);
                 }
+                else
+                {
+                    //Log or some other business requirments can be done
+                    //For this demo nothing is needed for an extra
+                }
             }
             catch (HttpRequestException)
             {
@@ -179,9 +188,9 @@
                 var result = await client.PostAsync("/api/vehicle/status",
                     new StringContent(JsonConvert.SerializeObject(new
                     {
-                        vehicleId = vehicleId,
+                        vehicleId,
                         message = message.Trim(),
-                        time = time
+                        time
                     }), Encoding.UTF8, "application/json"));
 
             }
