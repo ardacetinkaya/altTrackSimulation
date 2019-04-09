@@ -115,7 +115,7 @@
                 {
                     BaseAddress = new System.Uri(_config["AltTrackPingService"])
                 };
-                var result = await client.GetAsync($"api/connections/status/latest/{vehicleId}");
+                var result = await client.GetAsync($"/api/connections/status/latest/{vehicleId}");
 
 
                 if (result.IsSuccessStatusCode)
