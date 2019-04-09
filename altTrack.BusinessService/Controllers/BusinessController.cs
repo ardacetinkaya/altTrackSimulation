@@ -142,7 +142,7 @@
             catch (Exception ex)
             {
                 //Log exception or do some other related business stuff
-                status = $"Error: {ex.Message}";
+                status = $"Error: {ex.Message} URI:{_config["AltTrackPingService"]}";
             }
             return status;
 
