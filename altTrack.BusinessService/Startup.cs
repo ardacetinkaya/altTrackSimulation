@@ -24,7 +24,14 @@
 
             services.AddDbContext<AltTrackDataContext>(options =>
             {
+#if !DEBUG
                 options.UseSqlServer(Configuration["DBConnectionString"]);
+#endif
+
+#if DEBUG
+                options.UseInMemoryDatabase(databaseName: "Dummy");
+#endif
+
                 options.EnableSensitiveDataLogging();
             });
 

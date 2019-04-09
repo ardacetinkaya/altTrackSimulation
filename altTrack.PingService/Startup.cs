@@ -28,7 +28,13 @@ namespace PingService
         {
             services.AddDbContext<DataContext>(options =>
             {
+#if !DEBUG
                 options.UseSqlServer(Configuration["DBConnectionString"]);
+#endif
+
+#if DEBUG
+                options.UseInMemoryDatabase(databaseName: "Dummy");
+#endif
                 options.EnableSensitiveDataLogging();
             });
             

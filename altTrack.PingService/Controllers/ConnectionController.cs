@@ -42,6 +42,8 @@
                 var dummyResponse = responses[index];
 
                 //Save simulated response to service's data storage
+                //In fact in this scenario, this might be ackword.
+                //But the main idea is store every service's data to its own data storage
                 response = await _dataRepository.AddStatus(message.VehicleId.Trim(), dummyResponse);
             }
             catch (Exception ex)

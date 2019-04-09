@@ -19,100 +19,40 @@
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //modelBuilder.Entity<Customer>().HasKey(c => new { c.Id });
-            //modelBuilder.Entity<Customer>().Property(c => c.Id).ValueGeneratedOnAdd();
 
-            //modelBuilder.Entity<Vehicle>().HasKey(v => new { v.VehicleId });
+            if (this.Database.IsInMemory())
+            {
+                modelBuilder.Entity<Customer>().HasData(
+                    new Customer { Id = (long)1, FirstName = "Kalles", LastName = "Grustransporter" },
+                    new Customer { Id = (long)2, FirstName = "Johans", LastName = "Bulk" },
+                    new Customer { Id = (long)3, FirstName = "Harals", LastName = "Vardetransporter" }
+                );
 
-            //modelBuilder.Entity<Address>().HasKey(a => new { a.Id });
-            //modelBuilder.Entity<Address>().Property(a => a.Id).ValueGeneratedOnAdd();
+                modelBuilder.Entity<Address>().HasData(
+                    new Address { CustomerId = (long)1, Id = (long)1, Street = "Cementvägen 8", ApartmentNo = 111, PostalCode = 11, City = "Södertälje" },
+                    new Address { CustomerId = (long)2, Id = (long)2, Street = "Balkvägen 12", ApartmentNo = 222, PostalCode = 22, City = "Stockholm" },
+                    new Address { CustomerId = (long)3, Id = (long)3, Street = "Budgetvägen 1", ApartmentNo = 333, PostalCode = 33, City = "Uppsala" }
+                );
 
-            //modelBuilder.Entity<Customer>().HasData(
-            //    new
-            //    {
-            //        Id = (long)11,
-            //        FirstName = "Kalles",
-            //        LastName = "Grustransporter",
-            //        AddressId = (long)1
-            //    });
+                modelBuilder.Entity<Vehicle>().HasData(
+                    new Vehicle { Id = "YS2R4X20005399401", Brand = "Volvo" },
+                    new Vehicle { Id = "VLUR4X20009093588", Brand = "Volvo" },
+                    new Vehicle { Id = "VLUR4X20009048066", Brand = "Volvo" },
+                    new Vehicle { Id = "YS2R4X20005388011", Brand = "Volvo" },
+                    new Vehicle { Id = "YS2R4X20005387949", Brand = "Volvo" },
+                    new Vehicle { Id = "YS2R4X20005387055", Brand = "Volvo" }
+                   );
 
-            //modelBuilder.Entity<Customer>()
-            //            .OwnsOne(d => d.Address)
-            //            .HasData(new
-            //            {
-            //                CustomerId = (long)11,
-            //                Id = (long)1,
-            //                Street = "Cementvägen 8",
-            //                ApartmentNo = 111,
-            //                PostalCode = 11,
-            //                City = "Södertälje"
-            //            });
-
-            //modelBuilder.Entity<Customer>()
-            //            .OwnsMany(d => d.Vehicles)
-            //            .HasData(
-            //                new Vehicle { CustomerId = (long)11, VehicleId = "YS2R4X20005399401", RegistrationNumber = "ABC123", Status = "Unknown" },
-            //                new Vehicle { CustomerId = (long)11, VehicleId = "VLUR4X20009093588", RegistrationNumber = "DEF456", Status = "Unknown" },
-            //                new Vehicle { CustomerId = (long)11, VehicleId = "VLUR4X20009048066", RegistrationNumber = "GHI789", Status = "Unknown" }
-            //            );
-
-            //modelBuilder.Entity<Customer>().HasData(
-            //    new
-            //    {
-            //        Id = (long)22,
-            //        FirstName = "Johans",
-            //        LastName = "Bulk",
-            //        AddressId = (long)2
-            //    });
-
-            //modelBuilder.Entity<Customer>()
-            //            .OwnsOne(d => d.Address)
-            //            .HasData(new
-            //            {
-            //                CustomerId = (long)22,
-            //                Id = (long)2,
-            //                Street = "Balkvägen 12",
-            //                ApartmentNo = 222,
-            //                PostalCode = 22,
-            //                City = "Stockholm"
-            //            });
-
-            //modelBuilder.Entity<Customer>()
-            //            .OwnsMany(d => d.Vehicles)
-            //            .HasData(
-            //                new Vehicle { CustomerId = 22, VehicleId = "YS2R4X20005388011", RegistrationNumber = "JKL012", Status = "Unknown" },
-            //                new Vehicle { CustomerId = 22, VehicleId = "YS2R4X20005387949", RegistrationNumber = "MNO345", Status = "Unknown" }
-            //            );
-
-            //modelBuilder.Entity<Customer>().HasData(
-            //    new
-            //    {
-            //        Id = (long)33,
-            //        FirstName = "Harals",
-            //        LastName = "Vardetransporter",
-            //        AddressId = (long)3
-            //    });
-
-            //modelBuilder.Entity<Customer>()
-            //            .OwnsOne(d => d.Address)
-            //            .HasData(new
-            //            {
-            //                CustomerId = (long)33,
-            //                Id = (long)3,
-            //                Street = "Budgetvägen 1",
-            //                ApartmentNo = 333,
-            //                PostalCode = 33,
-            //                City = "Uppsala"
-            //            });
-
-
-            //modelBuilder.Entity<Customer>()
-            //            .OwnsMany(d => d.Vehicles)
-            //            .HasData(
-            //               // new Vehicle { CustomerId = 33, VehicleId = "VLUR4X20009048066", RegistrationNumber = "PQR678", Status = "Unknown" },
-            //                new Vehicle { CustomerId = 33, VehicleId = "YS2R4X20005387055", RegistrationNumber = "STU901", Status = "Unknown" }
-            //                );
-
+                modelBuilder.Entity<CustomerVehicle>().HasData(
+                    new CustomerVehicle { Id = 1, CustomerId = 1, RegistrationNumber = "ABC123", VehicleId = "YS2R4X20005399401" },
+                    new CustomerVehicle { Id = 2, CustomerId = 1, RegistrationNumber = "DEF456", VehicleId = "VLUR4X20009093588" },
+                    new CustomerVehicle { Id = 3, CustomerId = 1, RegistrationNumber = "GHI789", VehicleId = "VLUR4X20009048066" },
+                    new CustomerVehicle { Id = 4, CustomerId = 2, RegistrationNumber = "JKL012", VehicleId = "YS2R4X20005388011" },
+                    new CustomerVehicle { Id = 5, CustomerId = 2, RegistrationNumber = "MNO345", VehicleId = "YS2R4X20005387949" },
+                    new CustomerVehicle { Id = 6, CustomerId = 3, RegistrationNumber = "PQR678", VehicleId = "VLUR4X20009048066" },
+                    new CustomerVehicle { Id = 7, CustomerId = 3, RegistrationNumber = "STU901", VehicleId = "YS2R4X20005387055" }
+                    );
+            }
         }
     }
 }
