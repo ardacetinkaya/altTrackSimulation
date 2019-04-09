@@ -24,11 +24,12 @@
 
             services.AddDbContext<AltTrackDataContext>(options =>
             {
+                
                 options.UseInMemoryDatabase(databaseName: "Dummy");
                 options.EnableSensitiveDataLogging();
-            });
+            },ServiceLifetime.Singleton);
 
-            services.AddScoped<IDataRepository, AltTrackDataRepository>();
+            services.AddSingleton<IDataRepository, AltTrackDataRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

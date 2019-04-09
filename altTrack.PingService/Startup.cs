@@ -30,9 +30,9 @@ namespace PingService
             {
                 options.UseInMemoryDatabase(databaseName: "Dummy");
                 options.EnableSensitiveDataLogging();
-            });
+            },ServiceLifetime.Singleton);
             
-            services.AddTransient<IDataRepository, StatusDataRepository>();
+            services.AddSingleton<IDataRepository, StatusDataRepository>();
             services.AddMvc();
         }
 
