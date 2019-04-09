@@ -1,6 +1,7 @@
 namespace altTrack.Vehicle
 {
     using Microsoft.Azure.WebJobs;
+    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
     using Newtonsoft.Json;
     using System;
@@ -17,7 +18,7 @@ namespace altTrack.Vehicle
     public static class Vehicle
     {
         [FunctionName("Vehicle")]
-        public static async Task Run([TimerTrigger("0 */5 * * * *")]TimerInfo myTimer, ILogger log)
+        public static async Task Run([TimerTrigger("0 */5 * * * *")]TimerInfo myTimer, ILogger log,IConfiguration config)
         {
 
             List<string> _vehicles = new List<string>()
@@ -38,9 +39,10 @@ namespace altTrack.Vehicle
 
             try
             {
+                log.LogInformation($"Ping Service: {config["AltTrackPingService"]}");
                 HttpClient client = new HttpClient()
                 {
-                    BaseAddress = new Uri("https://alttrack-pingservice.azurewebsites.net")
+                    BaseAddress = new Uri(config["AltTrackPingService"])
                 };
                 var result = await client.PostAsync("/api/connections/ping/base",
                     new StringContent(JsonConvert.SerializeObject(new
@@ -49,7 +51,7 @@ namespace altTrack.Vehicle
                     }), Encoding.UTF8, "application/json"));
 
                 log.LogInformation($"Vehicle({vehicleSimulation}) simulation executed at: {DateTime.Now}");
-                log.LogInformation($"Result: Success");
+             
             }
             catch (Exception ex)
             {
