@@ -18,48 +18,72 @@
         private readonly IConfiguration _config = null;
 
         //Difference limit between current time and last connection check
-        private int _minuteDifference = 10;
+        private int _minuteDifference;
 
         public BusinessController(IDataRepository dataRepository, IConfiguration config)
         {
             _dataRepository = dataRepository;
             _config = config;
+
+            //Default is 10
+            _minuteDifference = !Int32.TryParse(config["TimeLimit"], out _minuteDifference) ? 10 : _minuteDifference;
+
         }
 
         [HttpGet]
         [Route("api/customers/all")]
         public async Task<ActionResult<IEnumerable<Customer>>> GetAll()
         {
-            var vehicles = await _dataRepository.GetVehicles();
-
-            //Check vehicles' latest status.
-            vehicles.ToList().ForEach(v =>
+            IEnumerable<Customer> response = null;
+            try
             {
-                var status = CheckStatus(v.Id);
-                _dataRepository.UpdateVehicleStatus(v.Id, status.Result, DateTimeOffset.Now);
-            });
+                var vehicles = await _dataRepository.GetVehicles();
 
-            var customers = await _dataRepository.GetCustomers();
+                //Check vehicles' latest status.
+                vehicles.ToList().ForEach(v =>
+                {
+                    var status = CheckStatus(v.Id);
+                    _dataRepository.UpdateVehicleStatus(v.Id, status.Result, DateTimeOffset.Now);
+                });
 
-            if (customers == null)
+                response = await _dataRepository.GetCustomers();
+
+                if (response == null || response.Count() <= 0)
+                {
+                    return NoContent();
+                }
+            }
+            catch (Exception ex)
             {
-                return NoContent();
+
+                return BadRequest($"Unexpected error: {ex.Message}");
             }
 
-            return Ok(customers);
+
+            return Ok(response);
         }
 
         [HttpGet]
         [Route("api/vehicle/{vehicleId}")]
         public async Task<ActionResult<Vehicle>> GetVehicle(string vehicleId)
         {
-            var vehicle = await _dataRepository.GetVehicle(vehicleId);
-
-            if (vehicle == null)
+            Vehicle response = null;
+            try
             {
-                return NoContent();
+                response = await _dataRepository.GetVehicle(vehicleId);
+
+                if (response == null)
+                {
+                    return NoContent();
+                }
             }
-            return Ok(vehicle);
+            catch (Exception ex)
+            {
+
+                return BadRequest($"Unexpected error: {ex.Message}");
+            }
+
+            return Ok(response);
         }
 
         [HttpPost]
@@ -95,14 +119,25 @@
                 return BadRequest("Invalid body.");
             }
 
-            var result = await _dataRepository.Search(body.CustomerName, body.VehicleId, body.Status);
+            IEnumerable<Customer> response = null;
 
-            if (result == null || result.Count() <= 0)
+            try
             {
-                return NoContent();
+                response = await _dataRepository.Search(body.CustomerName, body.VehicleId, body.Status);
+
+                if (response == null || response.Count() <= 0)
+                {
+                    return NoContent();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest($"Unexpected error: {ex.Message}");
             }
 
-            return Ok(result);
+
+            return Ok(response);
         }
 
         private async Task<string> CheckStatus(string vehicleId)

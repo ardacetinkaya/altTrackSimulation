@@ -1,8 +1,8 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
 namespace AltTrack.PingService.Data
 {
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+
     public interface IDataRepository
     {
         IEnumerable<VehicleStatus> GetAllStatuses(string vehicleId);

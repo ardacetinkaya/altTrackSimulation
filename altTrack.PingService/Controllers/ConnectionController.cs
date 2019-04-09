@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using altTrack.PingService.Model;
-using AltTrack.PingService.Data;
-using Microsoft.AspNetCore.Mvc;
-
-namespace PingService.Controllers
+﻿namespace PingService.Controllers
 {
+    using AltTrack.PingService.Model;
+    using AltTrack.PingService.Data;
+    using Microsoft.AspNetCore.Mvc;
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+
     [ApiController]
     public class ConnectionController : ControllerBase
     {
@@ -16,29 +15,39 @@ namespace PingService.Controllers
         {
             _dataRepository = dataRepository;
         }
+
         [HttpPost]
         [Route("api/connections/ping/vehicle")]
         public async Task<IActionResult> PingVehicle([FromBody] PingMessage message)
         {
+
             if (message == null || string.IsNullOrEmpty(message.VehicleId))
             {
                 return BadRequest("Invalid vehicle id.");
             }
 
-            //This part is all simulation. Assume that this is kind of a real ping for vehicles' network
-            //Make a ping request and process the response.
-            //This simulation randomly acts as "Connected","Disconnected" and "Unknown" response.
-            //Connected    : Vehicle is running
-            //Disconnected : Vehicle is not running
-            //Unknown      : Can not reach vehicle due to some network/connection problems
-            List<string> responses = new List<string>() { "Connected", "Disconnected","Unknown" };
-            Random random = new Random();
-            int index = random.Next(responses.Count);
-            var dummyResponse = responses[index];
+            VehicleStatus response = null;
 
-            //Save simulated response to service's data storage
-            var response = await _dataRepository.AddStatus(message.VehicleId.Trim(), dummyResponse);
+            try
+            {
+                //This part is all simulation. Assume that this is kind of a real ping for vehicles' network
+                //Make a ping request and process the response.
+                //This simulation randomly acts as "Connected","Disconnected" and "Unknown" response.
+                //Connected    : Vehicle is running
+                //Disconnected : Vehicle is not running
+                //Unknown      : Can not reach vehicle due to some network/connection problems
+                List<string> responses = new List<string>() { "Connected", "Disconnected", "Unknown" };
+                Random random = new Random();
+                int index = random.Next(responses.Count);
+                var dummyResponse = responses[index];
 
+                //Save simulated response to service's data storage
+                response = await _dataRepository.AddStatus(message.VehicleId.Trim(), dummyResponse);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Unexpected error: {ex.Message}");
+            }
 
             return Ok(response);
         }
@@ -51,8 +60,15 @@ namespace PingService.Controllers
             {
                 return BadRequest("Invalid vehicle id.");
             }
+            try
+            {
+                await _dataRepository.AddStatus(message.VehicleId.Trim(), "Connected");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Unexpected error: {ex.Message}");
+            }
 
-            await _dataRepository.AddStatus(message.VehicleId.Trim(), "Connected");
 
             return Ok();
         }
@@ -65,9 +81,19 @@ namespace PingService.Controllers
             {
                 return BadRequest("Invalid vehicle id.");
             }
-            var result = await _dataRepository.GetLastStatus(vehicleId);
 
-            return Ok(result);
+            VehicleStatus response = null;
+            try
+            {
+                response = await _dataRepository.GetLastStatus(vehicleId);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Unexpected error: {ex.Message}");
+            }
+
+
+            return Ok(response);
         }
     }
 }

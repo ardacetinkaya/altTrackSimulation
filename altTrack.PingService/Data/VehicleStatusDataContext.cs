@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace AltTrack.PingService.Data
+﻿namespace AltTrack.PingService.Data
 {
+    using Microsoft.EntityFrameworkCore;
+
     public class DataContext : DbContext
     {
         public DataContext()
