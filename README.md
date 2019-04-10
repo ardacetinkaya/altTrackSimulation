@@ -62,7 +62,9 @@ To simulate vehicles' Azure Fuctions is used in this solution. Of course, it can
 
 
 
-
 [![ForTheBadge built-with-love](http://ForTheBadge.com/images/badges/built-with-love.svg)](https://gitHub.com/ardacetinkaya/)
+
+[![Open Source Love](https://badges.frapsoft.com/os/v2/open-source-200x33.png?v=103)](https://github.com/ardacetinkaya)
+
 
 
