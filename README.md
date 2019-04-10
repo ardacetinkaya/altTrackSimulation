@@ -34,7 +34,8 @@ To simulate vehicles' Azure Fuctions is used in this solution. Of course, it can
 4. And finally build and run altTrack.WebUI
 
 *_For vehicle simulation run altTrack.Vehicle project as Azure Functions app, so additional Azure Functions tools/plug-ins might be needed for Visual Studio_
-*_In debug mode, no need to create DB(s). All data storage is operated as in-memory db in debug mode. In release mode SQL Servers and connections' strings are necessary_
+
+*_In debug mode, no need to create DB(s). All data storage is operated as in-memory db in debug mode. In release mode setting of SQL Servers and connections' strings in configuration files are necessary. Please do not forget to execute the table creation scripts in Database folders of projects' /Data folder._
 
 ### Built with...
 
