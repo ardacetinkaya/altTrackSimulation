@@ -13,9 +13,9 @@ altTrack is a simple vehicle simulation to demonstrate and try out some developm
 
 ### Structure
 
-Mainly the solution contains two ASP.NET Core Web API projects, one ASP.NET Core Web app. and one Azure Fuction. These can be thought  as some business components(services). They are not strictly connected to each other. They have their own data storage and operation logic in themselves. The main idea behind in this, make services as loose coupling and seperate data structures as possible as it can be, to have seperate scope of features/functions. 
+Mainly the solution contains two **ASP.NET Core Web API** projects, one **ASP.NET Core Web(Razor Pages)** app. and one **Azure Fuction**. These can be thought  as some business components(services). They are not strictly connected to each other. They have their own data storage and operation logic in themselves. The main idea behind in this, make services as **loose coupling** and **seperate data structures and storage** as possible as it can be, to have **seperate scope** of features/functions. 
 
-To simulate vehicles' Azure Fuctions is used in this solution. Of course, it can be done with some other mock-ups like IoT solutions.(_Maybe in future, I will do with my Raspberry Pi(s) with more fun :smiley: :smiley:_) In real world, vehicles are not running all time and preserve their resources(gas, electricity, ..etc.) In that approach, serverless computing is a good demostration way for vehicles.   
+To simulate vehicles' Azure Fuctions is used in this solution. Of course, it can be done with some other mock-ups like IoT solutions.(_Maybe in future, I will do with my Raspberry Pi(s) with more fun :smiley: :smiley:_) In real world, vehicles are not running all time and preserve their resources(gas, electricity, ..etc.) In that approach, **serverless computing** is a good demostration way for vehicles.   
 
 *_The scenario and the demostration might not be a perfect tech. solution but good way to dig more from keywords_
 
@@ -39,12 +39,11 @@ To simulate vehicles' Azure Fuctions is used in this solution. Of course, it can
 ### Built with...
 
 * C#
-* .NET Core v2.2
-* ASP.NET Core v2.2
-* Entity Framework
+* .NET Core v2.2 and ASP.NET Core v2.2 - (Web API and Web UI(Razor Pages)
+* Entity Framework - (MS SQL Server and In-Memory DB)
 * Bootstrap v4
-* Azure Services(App Services, Functions, SQL)
-* Azure DevOps
+* Azure Services - (App Services, Functions, SQL)
+* Azure DevOps - (For all CI/CD pipelines)
 * Docker
 
 ### Configuration
