@@ -53,7 +53,7 @@ To simulate vehicles' Azure Fuctions is used in this solution. Of course, it can
 | -----------------|:--------------|-------------|
 |Web UI|AltTrackBusinessService|URI ofBusiness service to fetch data and execute operations|
 |Web UI|AltTrackPingService|URI of Ping service to Ping vehicles|
-|Business Service|AltTrackPingService|URL of Ping service to get latest ping status|
+|Business Service|AltTrackPingService|URI of Ping service to get latest ping status|
 |Business Service|DBConnectionString|Connection string for DB|
 |Business Service|TimeLimit|Time limit for connection status|
 |Ping Service|DBConnectionString|Connection string for DB|
