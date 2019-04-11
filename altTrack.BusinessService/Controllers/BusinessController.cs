@@ -1,5 +1,6 @@
-﻿namespace altTrack.BusinessService.Controllers
+﻿namespace AltTrack.BusinessService.Controllers
 {
+    using AltTrack.BusinessService.Business;
     using AltTrack.BusinessService.Data;
     using AltTrack.Data;
     using Microsoft.AspNetCore.Mvc;
@@ -16,17 +17,14 @@
     {
         private readonly IDataRepository _dataRepository = null;
         private readonly IConfiguration _config = null;
-
-        //Difference limit between current time and last connection check
-        private readonly int _minuteDifference;
+        private readonly AltTrackBusiness _business = null;
 
         public BusinessController(IDataRepository dataRepository, IConfiguration config)
         {
             _dataRepository = dataRepository;
             _config = config;
 
-            //Default is 10
-            _minuteDifference = !Int32.TryParse(config["TimeLimit"], out _minuteDifference) ? 10 : _minuteDifference;
+            _business = new AltTrackBusiness(_dataRepository, config["TimeLimit"]);
 
         }
 
@@ -37,21 +35,10 @@
             IEnumerable<Customer> response = null;
             try
             {
-                var vehicles = await _dataRepository.GetVehicles();
-
-                //Check vehicles' latest status.
-                vehicles.ToList().ForEach(v =>
-                {
-                    var status = CheckStatus(v.Id);
-                    _dataRepository.UpdateVehicleStatus(v.Id, status.Result, DateTimeOffset.Now);
-                });
-
-                response = await _dataRepository.GetCustomers();
-
-                if (response == null || response.Count() <= 0)
-                {
-                    return NoContent();
-                }
+                response = await _business.GetAllTrackingInfo(async vehicleId =>
+                 {
+                     return await GetLastStatus(vehicleId);
+                 });
             }
             catch (Exception ex)
             {
@@ -70,7 +57,7 @@
             Vehicle response = null;
             try
             {
-                response = await _dataRepository.GetVehicle(vehicleId);
+                response = await _business.GetVehicle(vehicleId);
 
                 if (response == null)
                 {
@@ -100,12 +87,17 @@
                 return BadRequest("Invalid vehicle id.");
             }
 
-            if (!_dataRepository.IsVehicleExists(body.VehicleId))
+            if (!_business.IsVehicleExists(body.VehicleId))
             {
                 return BadRequest("Vehicle does not exists in system.");
             }
 
-            _dataRepository.UpdateVehicleStatus(body.VehicleId.Trim(), body.Message, body.Time);
+            var result =_business.UpdateVehicleStatus(body.VehicleId.Trim(), body.Message, body.Time);
+
+            if (!result)
+            {
+                return BadRequest("Can not update vehicle status.");
+            }
 
             return Ok();
         }
@@ -123,7 +115,7 @@
 
             try
             {
-                response = await _dataRepository.Search(body.CustomerName, body.VehicleId, body.Status);
+                response = await _business.Search(body.CustomerName, body.VehicleId, body.Status);
 
                 if (response == null || response.Count() <= 0)
                 {
@@ -140,10 +132,8 @@
             return Ok(response);
         }
 
-        private async Task<string> CheckStatus(string vehicleId)
+        private async Task<PingStatus> GetLastStatus(string vehicleId)
         {
-            var status = "Unknown";
-            var time = DateTimeOffset.Now;
             try
             {
                 HttpClient client = new HttpClient()
@@ -159,27 +149,25 @@
                     dynamic statusResult = JsonConvert.DeserializeObject(resultContent);
                     if (statusResult != null)
                     {
-                        status = statusResult.traceMessage;
-                        time = statusResult.traceTime;
-
-                        DateTimeOffset startTime = time;
-                        TimeSpan span = DateTimeOffset.Now.Subtract(startTime);
-
-                        //No status check for 10 mins. means that the vehicle is disconnected
-                        if (span.Minutes >= _minuteDifference)
+                        return new PingStatus
                         {
-                            status = "Disconnected";
-                        }
+                            Status = statusResult.traceMessage,
+                            LastCheckDate = statusResult.traceTime
+
+                        };
+
                     }
                 }
-
             }
             catch (Exception ex)
             {
-                //Log exception or do some other related business stuff
-                status = $"Error: {ex.Message} URI:{_config["AltTrackPingService"]}";
+                throw new Exception($"Unexpected error occured: {ex.Message}");
             }
-            return status;
+            return new PingStatus
+            {
+                Status = "Unknown",
+                LastCheckDate = DateTimeOffset.Now
+            };
 
         }
     }

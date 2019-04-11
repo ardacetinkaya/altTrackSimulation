@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace altTrack.BusinessService
+namespace AltTrack.BusinessService
 {
     public class StatusDTO
     {
