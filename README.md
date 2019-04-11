@@ -51,9 +51,16 @@ To simulate vehicles' Azure Fuctions is used in this solution. Of course, it can
 
 * Soon...
 
-### Deployment
+### Integration and Deployment
 
-* Soon...
+* There three App. Services and one Function in Azure for this repository.
+* Every commit to this repository create a build task in Azure DevOps
+* Build tasks are triggered as repository paths.(Ex: Commit to Web.UI project triggers just Web UI build taks)
+* When the build tasks completed successfully, a deployment taks in release pipeline is triggered.
+* Configuration parameters transforms are executed in deployment task with variables in task. So for specific enviroment, configuration settings can be manged.(_Please be sure about variables are set correctly_)
+* When deployment task is finished as successfull, everthing is ready and running.
+
+*_It is also possible to make deployment as Docker images, check Docker files and set parameters as needed_
 
 ### Missing points...
 
@@ -64,7 +71,6 @@ To simulate vehicles' Azure Fuctions is used in this solution. Of course, it can
 
 [![ForTheBadge built-with-love](http://ForTheBadge.com/images/badges/built-with-love.svg)](https://gitHub.com/ardacetinkaya/)
 
-[![Open Source Love](https://badges.frapsoft.com/os/v2/open-source-200x33.png?v=103)](https://github.com/ardacetinkaya)
 
 
 
